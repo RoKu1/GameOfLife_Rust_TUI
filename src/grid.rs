@@ -341,7 +341,7 @@ impl Shape for grid{
 mod test{
     use super::grid;
 
-    #[test]
+    #[cfg(test)]
     fn test_rand(){
         let mut g = grid::new();
         g._show();
@@ -349,13 +349,19 @@ mod test{
         g._show();
         g.on_tick(true);
         g._show();
-
+        drop(g)
     }
-    #[test]
+    #[cfg(test)]
     fn test_rect(){
-        let mut g = grid::new();
-        g.random_gen();
-        g._show_dim();
+        let mut r = grid::new();
+        println!();
+        r.random_gen();
+        r._show_dim();
+    }
 
+    #[test]
+    fn test_grid(){
+        test_rand();
+        test_rect();
     }
 }
