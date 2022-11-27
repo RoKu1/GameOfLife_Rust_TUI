@@ -1,5 +1,6 @@
+
 use rand::Rng;
-use tui::{widgets::canvas::Shape, style::Color};
+use tui::{widgets::canvas::{Shape, Line, Painter}, style::Color};
 
 
 pub const GRIDSIZE: usize = 100;
@@ -7,17 +8,9 @@ pub const ALIVE_COLOR: Color = tui::style::Color::Green;
 pub const DEAD_COLOR: Color = tui::style::Color::Black;
 
 
-// #[derive(Debug)]
-// pub enum State {
-//     Alive,
-//     Dead,
-// }
-
 #[derive(Debug, Copy, Clone, Default)]
 pub struct Cell {
     pub state: bool,
-    pub row: usize,
-    pub col: usize,
     pub ind: usize,
 }
 
@@ -79,11 +72,28 @@ impl Cell {
 }
 
 
+#[derive(Clone, Copy)]
+#[allow(non_camel_case_types, non_snake_case)]
+pub struct cell_rect{
+    pub x: f64,
+    pub y: f64,
+    pub width: f64,
+    pub height: f64,
+    pub color: Color,
+}
+
+impl Default for cell_rect{
+    fn default() -> Self {
+        Self { x: 0.0, y: 0.0, width: 1.0, height: 1.0, color: Color::Black }
+    }
+}
+
 
 #[allow(non_camel_case_types, non_snake_case)]
 pub struct grid {
     pub Cells: [Cell; (GRIDSIZE * GRIDSIZE)],
     pub Nes: Vec<Vec<usize>>,
+    pub Dim: [cell_rect; (GRIDSIZE * GRIDSIZE)]
 }
 
 
@@ -91,22 +101,35 @@ impl grid {
     pub fn new() -> grid {
         let mut grid = grid {
             Cells: [Cell::default(); 10000],
-            Nes: Vec::new()
+            Nes: Vec::new(),
+            Dim: [cell_rect::default(); 10000]
         };
         let mut ind = 0;
-
-        for r in 0..GRIDSIZE {
-            for c in 0..GRIDSIZE {
+        let mut xd:f64 = 0.0;
+       
+        
+        for _r in 0..100 {
+            let mut yd:f64 = 0.0;
+            for _c in 0..100 {
                 let cell = Cell {
                     state: false,
-                    row: r.into(),
-                    col: c.into(),
-                    ind: ind,
+                    ind: ind
                 };
+
+                let rect = cell_rect{
+                    x: xd,
+                    y: yd, 
+                    width: 1.0, 
+                    height: 1.0, 
+                    color: Color::Black};
+
+                yd += 3.0;
                 grid.Cells[ind] = cell;
                 grid.Nes.push( grid.Cells[ind].neighbours());
+                grid.Dim[ind] = rect.clone();
                 ind += 1;
             }
+            xd += 3.0;
         }
         grid
     }
@@ -177,7 +200,11 @@ impl grid {
 
     }
     
-    
+    pub fn _show_dim(&self){
+        for d in self.Dim{
+            println!("x: {}, y:{}", d.x, d.y);    
+        }
+    }
     // fn next_gen(&mut self) -> Vec<(usize, bool)> {}
     pub fn on_tick(&mut self, active: bool) {
         // info!("On Tick Called for GRID");
@@ -225,22 +252,71 @@ impl grid {
         }
 
     }
-}
 
-impl Shape for grid{
-    fn draw(&self, painter: &mut tui::widgets::canvas::Painter) {
-        let mut ind: usize = 0;
-        for r in 0..GRIDSIZE {
-            for c in 0..GRIDSIZE {
-                if self.Cells[ind].state{
-                    painter.paint(r, c, ALIVE_COLOR);
-                }else{
-                    painter.paint(r, c, DEAD_COLOR);
+    fn _draw_rects(&self, painter: &mut Painter){
+        let mut ind = 0;
+        for mut dim in self.Dim{
+            if self.Cells[ind].state{
+                dim.color = ALIVE_COLOR;
+            let lines: [Line; 4] = [
+                Line {
+                    x1: dim.x,
+                    y1: dim.y,
+                    x2: dim.x,
+                    y2: dim.y + dim.height,
+                    color: dim.color,
+                },
+                Line {
+                    x1: dim.x,
+                    y1: dim.y + dim.height,
+                    x2: dim.x + dim.width,
+                    y2: dim.y + dim.height,
+                    color: dim.color,
+                },
+                Line {
+                    x1: dim.x + dim.width,
+                    y1: dim.y,
+                    x2: dim.x + dim.width,
+                    y2: dim.y + dim.height,
+                    color: dim.color,
+                },
+                Line {
+                    x1: dim.x,
+                    y1: dim.y,
+                    x2: dim.x + dim.width,
+                    y2: dim.y,
+                    color: dim.color,
+                },
+               ];
+            for line in &lines {
+                    line.draw(painter);
                 }
+            }
             ind += 1;
+        }
+    }
+    
+    fn _draw_points(&self, painter: &mut Painter){
+        let mut ind = 0;
+        for x in 0..100{
+            for y in 0..100{
+                if self.Cells[ind].state{
+                    painter.paint(x, y, ALIVE_COLOR);
+                } else{
+                    painter.paint(x, y, DEAD_COLOR);
+                }
+                ind += 1;
             }
         }
-    
+    }
+
+}
+
+
+
+impl Shape for grid{
+    fn draw(&self, painter: &mut Painter) {
+        self._draw_points(painter);
     }
 }
 
@@ -273,6 +349,13 @@ mod test{
         g._show();
         g.on_tick(true);
         g._show();
+
+    }
+    #[test]
+    fn test_rect(){
+        let mut g = grid::new();
+        g.random_gen();
+        g._show_dim();
 
     }
 }
