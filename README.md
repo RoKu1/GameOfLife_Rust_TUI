@@ -24,3 +24,6 @@ e: stop auto mode
 
 q: exit terminal app
 ```
+
+##Demo
+![screen-gif](./working_tui_gol.gif)
