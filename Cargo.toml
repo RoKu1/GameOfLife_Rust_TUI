@@ -1,0 +1,13 @@
+[package]
+name = "game-of-life"
+version = "0.1.0"
+edition = "2021"
+author = "roku"
+
+[dependencies]
+# you can check the latest version here: https://crates.io/crates/yew
+simplelog = "0.12.0"
+log = "0.4.16"
+tui = "0.19"
+crossterm = "0.25"
+rand = "0.8"
