@@ -22,6 +22,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: clippy, rustfmt
+          targets: wasm32-unknown-unknown
       - uses: Swatinem/rust-cache@v2
       - name: Format
         run: cargo fmt --all -- --check
@@ -31,3 +32,5 @@ jobs:
         run: cargo test --all-targets
       - name: Release build
         run: cargo build --release
+      - name: WASM library check
+        run: cargo check --target wasm32-unknown-unknown --lib

@@ -80,6 +80,10 @@ impl Board {
         self.cells.iter().filter(|&&alive| alive).count()
     }
 
+    pub fn cells(&self) -> &[bool] {
+        &self.cells
+    }
+
     pub fn step(&mut self) {
         for y in 0..self.height {
             for x in 0..self.width {

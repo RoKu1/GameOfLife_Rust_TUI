@@ -2,6 +2,8 @@
 
 A keyboard-driven terminal interface for Conway's Game of Life, written in Rust with Ratatui and Crossterm.
 
+**[Open the browser version on GitHub Pages →](https://roku1.github.io/GameOfLife_Rust_TUI/)**
+
 ![Build](https://github.com/RoKu1/GameOfLife_Rust_TUI/actions/workflows/rust.yml/badge.svg?branch=main)
 
 ## Run
@@ -17,6 +19,18 @@ For a smooth, optimized simulation, use the release profile:
 ```sh
 cargo run --release
 ```
+
+The browser version is published automatically from `main` through GitHub Pages when the repository Pages source is set to **GitHub Actions**. In GitHub, open **Settings → Pages → Build and deployment → Source → GitHub Actions**. The workflow builds the Rust WebAssembly engine and static frontend in `web/`, using the repository subpath so assets work at the project Pages URL.
+
+To build the browser version locally, install [`wasm-pack`](https://rustwasm.github.io/wasm-pack/installer/) and run:
+
+```sh
+cd web
+npm install
+npm run build
+```
+
+For local browser development, use `npm run dev` from `web/`. The generated `web/pkg` and `web/dist` folders are build artifacts and are not committed.
 
 Both commands open the TUI directly. `cargo run` is convenient while developing; release mode enables LTO and full optimizations for everyday use. The logical board is fixed at 100 × 100 cells. The simulation runs continuously until paused or stopped; there is no generation-count prompt.
 
@@ -47,6 +61,8 @@ At launch, choose one of:
 - **Current workspace** — starts with the current in-memory board. Press **E** to edit it first.
 - **Pattern library** — select a built-in pattern with **←/→**.
 - **Random board** — generates a fresh random starting state.
+
+The browser version opens on the **Pattern library** by default, with the selected pattern previewed immediately. Its speed control is measured in generations per second, so moving it right always makes the simulation faster.
 
 The pattern library includes the original classics plus ten new additions: Gosper glider gun, Pentadecathlon, Tumbler, Middleweight and Heavyweight spaceships, Diehard, Queen bee shuttle, Puffer 1, Pufferfish, and Kok's galaxy. Browse them with **←/→** before starting a simulation. The gun emits gliders, spaceships and puffers move across the board, the shuttle and oscillators continually reshape, and Diehard eventually burns out.
 
@@ -101,7 +117,14 @@ CI runs these checks on Linux, macOS, and Windows using the latest stable Rust t
 - [Ratatui](https://ratatui.rs/) · [Crossterm](https://docs.rs/crossterm/latest/crossterm/)
 - [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)
 - [ConwayLife Wiki](https://www.conwaylife.com/wiki/)
+- [Browser / GitHub Pages plan](./WEB_PLAN.md)
 
-## Demo
+## Terminal demo
 
-![Game of Life TUI demo](./working_tui_gol.gif)
+The terminal version is interactive, so the current experience is best tested directly:
+
+```sh
+cargo run --release
+```
+
+It opens the setup screen, where you can choose the pattern library, edit the workspace, or generate a random board. The previous GIF showed the old prototype controls and has been removed from the README.

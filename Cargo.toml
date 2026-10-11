@@ -7,10 +7,19 @@ description = "A terminal-based Conway's Game of Life"
 license = "GPL-3.0-only"
 repository = "https://github.com/RoKu1/GameOfLife_Rust_TUI"
 
+[lib]
+crate-type = ["rlib", "cdylib"]
+
 [dependencies]
+rand = "0.9.2"
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 ratatui = "0.30.2"
 crossterm = "0.29.0"
-rand = "0.9.2"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen = "0.2.129"
+getrandom = { version = "0.3", features = ["wasm_js"] }
 
 [profile.release]
 lto = "thin"

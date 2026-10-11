@@ -1,5 +1,3 @@
-mod grid;
-
 use std::{
     error::Error,
     io::{self, Stdout},
@@ -12,7 +10,7 @@ use crossterm::{
     execute,
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
-use grid::{Board, Pattern, PATTERNS};
+use game_of_life::grid::{Board, Pattern, PATTERNS};
 use ratatui::{
     backend::CrosstermBackend,
     layout::{Alignment, Constraint, Direction, Layout, Rect},

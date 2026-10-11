@@ -1,3 +1,8 @@
 /target/
 ./log.rs
 .DS_Store
+web/pkg/*
+!web/pkg/game_of_life.d.ts
+web/dist
+web/node_modules
+pkg
