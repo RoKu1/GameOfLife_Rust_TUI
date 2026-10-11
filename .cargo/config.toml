@@ -1,0 +1,4 @@
+# Use the Command Line Tools' generic SDK symlink. On the current host it points
+# to 26.5, while xcrun selects a 27.0 SDK whose stubs the linker cannot parse.
+[env]
+SDKROOT = { value = "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk", force = false }

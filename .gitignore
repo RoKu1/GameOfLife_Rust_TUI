@@ -1,4 +1,3 @@
-./target/*
-./target
+/target/
 ./log.rs
-target
+.DS_Store
